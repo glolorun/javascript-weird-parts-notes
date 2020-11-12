@@ -1,0 +1,253 @@
+11.05.2020
+JavaScript: Understanding the Weird Parts
+
+https://www.udemy.com/share/101XjUAEIbcVZUTXoD/
+Notes
+
+    SECTION 2: Execution Contexts and Lexical Environments 
+
+
+
+            14. Invocation
+
+                Invoking a function just means running or calling a function. In javascript you use ().
+
+                            Ex: 
+                            function a() {
+                                b();
+                                var c;
+                            }
+
+                            function b() {
+                                    var d;   
+                            }
+
+                            a();
+                            var d;
+
+                a(); and b(); are both Execution Contexts
+                Running this will create a Global Execution Context and then it will attach these functions to it. 
+                Every function creates a new execution context which runs through the create phase then executes the code line by line within the function.
+                Javascript is synchronous, one line at a time. What's running is the current code within the current execution context. Which is the one at the top of the stack. 
+                The lexical order doesn't matter.
+                When the function finishes, the execution context is what's called "popped off the stack". 
+                Every time a function is invoked, even if its invoking itself, a new execution context is created, put on top of the stack, and then when the function finishes, its popped off.
+
+
+
+            15. Functions, Context and Variable Environments
+
+                Variable environment is just talking about where the variables live that we've created and how they relate to each other in memory.
+
+                Ex:
+                function b() {
+                    var myVar;
+                    console.log(myVar);
+                }
+
+                function a() {
+                        var myVar = 2;
+                            console.log(myVar);
+                        b();
+                }
+
+                var myVar = 1;
+                    console.log(myVar);
+                a();
+                    console.log(myVar);
+
+                Output will be: 
+                1
+                2
+                undefined (first myVar has no value)
+                1
+
+
+
+            16. The Scope Chain 
+
+                Scope Chain:         b()
+                                Execution Context
+                                (create and execute)
+
+                                    a()
+                                Execution Context 
+                                (create and execute)    myVar 
+                                                        2
+
+                                Global Execution Context
+                                (created and code is executed)   myVar
+                                                                1
+
+            17. Scope, ES6, and let
+
+                Scope:
+                Where a variable is available in your code.
+                ..and if its truly the same variable, or a new copy.        
+                        
+                
+            18. Asynchronous Callbacks
+
+                Asynchronous: More than one at a time. Different pieces of code executing at the same time.
+                Since Javascript is synchronous, how does it handle those asynchronous events?
+                Javascript does exist by itself inside a browser. There are other elements and engines running code as well. ex: Rendering Engine, HTTP Requests, etc.
+                Whats happening just inside the javascript engine is synchronous.'
+                Asynchronous: Other parts of the browser are looking at that code while javascript is doing its thing synchronously.
+
+                The Event Queue sits inside the javascript engine. Its full of events, notifications of events, that might be happening. 
+                When the browser has an event that inside of the javascript engine, we want to be notified of, it gets placed on the queue.
+
+                For a click event, that event queue gets looked at by javascript when the execution stack is empty aka after the Scope Chain finishes...
+                ...Next javascript will periodically look at the event queue and waits for something to be there.
+                If something is there, it looks to see if a particular function should be run when that event was triggered
+
+                It sees the click event, processes it, and knows there's a function that needs to be run for that event. So it then creates the execution context for whatever function that event happened.
+                
+                Ex:     clickHandler()
+                        Execution Context
+                        (create and execute)
+
+                Reminder, the event queue wont start until JS is finished reading all that other code line by line. (page loaded?)
+
+                ex:
+                
+                // long running function
+                function waitThreeSeconds() {
+                    var ms= 3000 + new Date().getTime();
+                    while (new Date() < ms){}
+                    console.log('finished function');
+                }
+
+                function clickHandler() {
+                    console.log('click event!');
+                }
+
+                //listen for the click event
+                document.addEventListener('click', clickHandler);
+
+                waitThreeSeconds();
+                console.log('finished execution');
+
+                Reminder, JS will look at all the other code, make sure its running, and the run that event.
+
+
+    SECTION 3: Types and Operators
+
+            19: Conceptual Aside: Types and JavaScript
+
+                Dynamic Typing: You don't tell the engine what type of data a variable holds, it figures it out on its own while your code is running.
+                Variables can hold different types of values because its all figured out during execution.
+
+                Static Typing: You tell the engine/compiler ahead of time what type of data you intend to hold inside a variable.
+                ex: Languages like Java and C+ use Static Typing.
+                                                    bool isNew = 'hello'; //an error
+                bool is saying that this variable should hold a Boolean value, either true of false. And that if you try to put a value other than a boolean into that variable, you get an error.
+
+                Javascript is dynamic like that. There's no keyword to tell the engine what kind of data you intend to put inside the variable. 
+                Take var below for example. While the code is running, the javascript engine will determine what type you're giving that variable.
+
+                Dynamic Typing: You don't tell the engine what type of data a variable holds, it figures it out on its own while your code is running.
+                Variables can hold different types of values because its all figured out during execution.
+                ex:                                 var isNew = true; //no errors
+                                                    isNew = 'yup!' ; 
+                                                    isNew = 1;
+
+
+
+            20. Primitive Type
+
+                Primitive Type: A type of data that represents a single value. Aka, not an object.
+                An object would be a collection of name value pairs. A Primitive type is just a single value.
+
+                6 Types of Primitive Type in JavaScript:
+
+                Undefined - undefined represents a lack of existence. What JavaScript sets a variable to initially. Will stay undefined unless you set the variable to have a value.
+                Null - null also represents lack of existence. Better to use when YOU want to say that a variable has no value. (instead of the engine's default.)
+                Boolean - true or false
+                Number - Floating point number (there's always some decimals). Unlike other programming languages, there's only one 'number' type...and it can make math weird.
+                String - a sequence of characters (both ' and " can be used)
+                Symbol - Used in ES6 (ECMAScript 6)
+
+                21. Conceptual Aside: Operators
+
+                Operator: A special function that is syntactically (written) differently. Generally operators take two parameters and return one result.
+                Ex:      + - / x
+                            var a = 3 + 4;
+                            This is using infix notation meaning that the function name, the operator, sits between the two parameters.
+
+                Summary: Operators are functions
+
+
+
+            22. Operator Precedence and Associativity (Look up chart for JS Operator Precedence)
+                https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Operator_Precedence
+
+                Operator Precedence: Which operator function gets called first. Functions are called in order of precedence. (Higher precedence wins)
+                                     If I have more than one operator, the javascript engine will invoke the operator with the highest precedence first and then down the line from there.
+
+                Associativity: What order operator functions get called in: left-to-right or right-to-left.
+                               When the operator functions have the same precedence, it will get called by this.
+
+                               ex: multiplication has a higher precedence than addition, so: var a = 3 + 4 * 5; would equal 23 instead of 35.
+                               ex: mult and division have the same precedence, 
+                               
+                               var a = 2, b = 3, c = 4; 
+                               a = b = c;
+                               console.log(a);            
+                               console.log(b);            
+                               console.log(c);            
+
+                            Due to right-to-left associativity, c = 4 would be called first and they would all be equal to 4. 
+                            The equals sign operator (assignment operator) has a right-to-left associativity.
+                            
+                            Anything in parenthesis has highest possible precedence and gets called first.
+            
+            24. Conceptual Aside: Coercion
+
+                Coercion: Converting a value from one type to another. 
+                This happens often in JavaScript because its dynamically typed.
+
+                What if we passed two different types? What happens?   
+                            ex: var a = 1 + '2';
+                            console.log(a)                The output would be '12'
+
+                The 1 was coerced into a string. JavaScript tried to find out what it would be if it were a string.
+
+
+            25. Comparison Operators
+
+                ex: console.log(1 < 2 < 3);    
+                output: true     It runs like 1 < 2 = true. Then it runs true < 3. It coerces the boolean into a number (0). So it ultimately prints 0 < 3. Which is true.
+
+                The less than operator has left-to-right associativity. 
+
+                ex: console.log(3 < 2 < 1);    output: true
+                same explanation.
+
+                Note: undefined can not be coerced into a number. You will get NAN.
+                      null will be coerced in to 0.
+
+
+                ex: var a = 0;
+                    var b = false;
+
+                    if (a == b) {
+                        console.log('They are equal');
+                    }
+                    else {
+                        console.log('Nope, not equal.')
+                    }
+
+                    Using == will coerce false and 0 to the same value (0) making them equal.
+                    Using === will print Nope, not equal because they are different types, number and boolean.
+
+                    99% of the time you should use === when making comparisons.
+
+        SECTION 4: Objects and Functions
+
+            30. Objects and the Dot
+
+
+
+
+

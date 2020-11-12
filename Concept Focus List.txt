@@ -1,0 +1,5 @@
+List the concepts that aren't clicking.
+
+
+Execution Context
+Operator Precedence
