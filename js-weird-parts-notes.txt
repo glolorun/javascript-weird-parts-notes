@@ -281,6 +281,107 @@ Notes
                                 console.log(person.address.city);
                                 console.log(person["address"]["state"]);    - Output - 111 Main St./New York/NY
 
+            31. Objects and Object Literals
+                
+                In javascript there is often more than one way to do something.
+
+                var person = new Object();      - same as -     var person = {};     - Shorthand method to do the same thing. This is known as using the object literal.
+
+
+                You can also initialize the object, all within the {}, which will be treated as one line of code.
+
+                var person = { firstname: 'Tony', lastname: 'Alicea'};              - 2 properties on one object. 
+
+                This is just the same thing as doing:      person = new Object();
+                                                            person.firstname = "Tony";
+                                                            person.lastname = "Alicea"
+
+                var person = {                                                  - This is all treated as one line of code.
+                    firstname: 'Tony',                                          - It sees the {} and understands that you're creating an object and looks for the name value pairs. 
+                    lastname: 'Alicea',                                         - You can drop an object in wherever you want and define its properties and methods on the fly using the syntax.
+                    address: {
+                        street: '111 Main St.',
+                        city: 'New York',
+                        state: 'NY'
+                    }
+                };
+
+                console.log(person);
+
+                You can also create an object on the fly when passing to a function
+
+                function greet(person) {
+                    console.log('Hi ' + person.firstname);
+                }
+
+                greet(Tony);                    output: 'Hi Tony'
+
+                The object that was created and sitting in memory was passed to the function and is able to be used.
+
+                You could also call the greet function and create an object on the fly. 
+
+                greet({                                         output: 'Hi Mary'
+                    firstname: 'Mary', 
+                    lastname: 'Doe'
+                    });
+
+                You can mix and match this syntax
+
+                Tony.address2 = {
+                    street: '333 Second St.'
+                }
+
+                REMEMBER: The code that you write is really what's happening under the hood. It's being translated by the Javascript engine into something the computer can understand.
+                The syntax, whether its object literals, or using the dot operator, or you're saying the new object...is all doing the exact same thing under the hood.
+                Its creating this object in memory and its properties and methods in memory.
+                The syntax that we're using doesn't matter because in the end its all creating the same thing.
+
+
+            32. Framework Aside: Faking Namespaces
+
+                Namespace: A container for variables and functions. Typically to keep variables and functions with the same name separate.
+                In Javascript, because of the nature of objects, we don't need namespaces as a feature. We can fake it.
+
+                var greet = 'Hello!';                       - When we console.log greet which will we see first?
+                var greet = 'Hola!';                        - We should see 'Hola!'
+                                                            - We know that greet will be set to undefined and then synchronously these lines of code will be run in order.
+                console.log(greet);
+
+                Imagine that those two variables were created in two different javascript files. Maybe in an english and a spanish speaking library,
+                This would be a problem because both are setting their value, in this case on the global object, and overwriting each other.]
+                Namespaces would help us with this because we would have both a container for the english greeting and one for the spanish greeting and its related methods and properties.
+                Even though we don't have namespaces in javascript we can do the same thing with objects.
+
+                var english = {};
+                var spanish = {};
+
+                english.greet = 'Hello!';
+                spanish.greet = 'Hola!';
+
+                Although these two variables are both called greet, they don't collide with each other, they don't override each other.
+
+                console.log(english);                       output: Object {greet: "Hello!"}
+
+                The english variable basically becomes a container, to make sure we don't collide with other things, JS files, variables in the global namespace, etc.
+                You can go as deep as you want with levels of different containing objects.
+
+                You can't just do  -   english.greetings.greet= 'Hello!';
+                You'll get:             Uncaught TypeError: Cannot set property 'greet' of undefined
+                Remember, the dot operator is left associative. When its called it looks for a greetings variable on english, and since its empty, it can't find it.
+                english.greetings.greet actually returns undefined.greet because english.greetings doesn't exist.
+                
+                You have to create the object                                       english.greetings = {};
+
+                OR you could initialize using object literal syntax                 var english = {
+                                                                                        greetings: {
+                                                                                            basic: 'Hello'
+                                                                                            }
+                                                                                    };
+                The idea is to contain your variables, functions, methods, objects inside a container object.  
+
+            33. JSON and Object Literals
+
+
 
  
 
